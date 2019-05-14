@@ -32,18 +32,20 @@ void process_image_callback(const sensor_msgs::Image img)
     uint32_t right = step;
     int i = 0;
     uint32_t imgsize = imgdata.size();
-    while(imgdata[i] != white_pixel)
+    while(imgdata[i] != white_pixel || 
+	imgdata[i+1] != white_pixel ||
+	imgdata[i+2] != white_pixel)
     {
+	i += 3;
 	if( i == imgsize)
 	{
 	   ROS_INFO("No ball in view. car should stop");
 	   drive_robot(0.0,0.0);
 	   return;
 	}
-	i++;
 
     }
-    uint32_t pos = i % img.height;
+    uint32_t pos = i / 3 % img.height;
     ROS_INFO("Data pixel pos is : %d",pos);
     if(pos >= 0 && pos < left)
     {
